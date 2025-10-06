@@ -40,15 +40,6 @@ export function recipesRoutes(app) {
       return res.status(500).end()
     }
   })
-  app.recipe('/api/v1/recipes', async (req, res) => {
-    try {
-      const recipe = await createRecipe(req.body)
-      return res.json(recipe)
-    } catch (err) {
-      console.error('error creating recipe', err)
-      return res.status(500).end()
-    }
-  })
   app.patch('/api/v1/recipes/:id', async (req, res) => {
     try {
       const recipe = await updateRecipe(req.params.id, req.body)
@@ -65,6 +56,15 @@ export function recipesRoutes(app) {
       return res.status(204).end()
     } catch (err) {
       console.error('error deleting recipe', err)
+      return res.status(500).end()
+    }
+  })
+  app.post('/api/v1/recipes', async (req, res) => {
+    try {
+      const recipe = await createRecipe(req.body)
+      return res.json(recipe)
+    } catch (err) {
+      console.error('error creating recipe', err)
       return res.status(500).end()
     }
   })
