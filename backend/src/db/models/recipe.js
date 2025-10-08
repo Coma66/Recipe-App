@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose'
 const recipeSchema = new Schema(
   {
     title: { type: String, required: true },
-    author: String,
+    author: { type: Schema.Types.ObjectId, ref: 'user', required: true },
     ingredients: String,
     image: String,
     tags: [String],

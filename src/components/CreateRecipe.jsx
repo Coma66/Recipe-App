@@ -1,23 +1,25 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import { createRecipe } from '../api/recipes.js'
 
 export function CreateRecipe() {
   const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
   const [ingredients, setIngredients] = useState('')
   const [image, setImage] = useState('')
+  const [token] = useAuth()
 
   const queryClient = useQueryClient()
 
   const createRecipeMutation = useMutation({
-    mutationFn: () => createRecipe({ title, author, ingredients, image }),
+    mutationFn: () => createRecipe(token, { title, ingredients, image }),
     onSuccess: () => queryClient.invalidateQueries(['recipes']),
   })
   const handleSubmit = (e) => {
     e.preventDefault()
     createRecipeMutation.mutate()
   }
+  if (!token) return <div>Please log in to create new recipes.</div>
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -31,21 +33,11 @@ export function CreateRecipe() {
         />
       </div>
       <br />
-      <div>
-        <label htmlFor='create-author'>Author: </label>
-        <input
-          type='text'
-          name='create-author'
-          id='create-author'
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-        />
-      </div>
-      <br />
       <textarea
         value={ingredients}
         onChange={(e) => setIngredients(e.target.value)}
       />
+      <br />
       <br />
       <div>
         <label htmlFor='create-image'>Image URL: </label>
@@ -66,7 +58,7 @@ export function CreateRecipe() {
       {createRecipeMutation.isSuccess ? (
         <>
           <br />
-          Post created successfully!
+          Recipe created successfully!
         </>
       ) : null}
     </form>
