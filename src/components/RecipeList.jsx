@@ -6,8 +6,8 @@ export function RecipeList({ recipes = [] }) {
   return (
     <div>
       {recipes.map((recipe) => (
-        <Fragment key={recipe._id}>
-          <Recipe {...recipe} key={recipe._id} />
+        <Fragment key={recipe.id}>
+          <Recipe {...recipe} key={recipe.id} />
           <hr />
         </Fragment>
       ))}

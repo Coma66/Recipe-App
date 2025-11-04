@@ -1,0 +1,4 @@
+{
+  "schema": "https://shiny-meme-xgw5rwwjpq72v7vg-3001.app.github.dev/graphql",
+  "documents": "src/api/graphql/**/*.{js,jsx}"
+}
