@@ -2,12 +2,14 @@ import { GraphQLError } from 'graphql'
 import { createUser, loginUser } from '../services/users.js'
 import { createRecipe } from '../services/recipes.js'
 import { updateRecipe } from '../services/recipes.js'
+import { likeRecipe } from '../services/recipes.js'
 export const mutationSchema = `#graphql
 type Mutation {
 signupUser(username: String!, password: String!): User
 loginUser(username: String!, password: String!): String
 createRecipe(title: String!, ingredients: String, image: String, likes: Int, tags:[String]): Recipe
 updateRecipe(title: String!, ingredients: String, image: String, likes: Int, tags:[String]): Recipe
+likeRecipe(id: String, likes: Int): Recipe
 }
 `
 export const mutationResolver = {
@@ -63,6 +65,19 @@ export const mutationResolver = {
         likes,
         tags,
       })
+    },
+    likeRecipe: async (parent, { id, likes }, { auth }) => {
+      if (!auth) {
+        throw new GraphQLError(
+          'You need to be authenticated to perform this action.',
+          {
+            extensions: {
+              code: 'UNAUTHORIZED',
+            },
+          },
+        )
+      }
+      return await likeRecipe(id, likes + 1)
     },
   },
 }
