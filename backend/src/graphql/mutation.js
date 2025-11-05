@@ -22,7 +22,7 @@ export const mutationResolver = {
     },
     createRecipe: async (
       parent,
-      { title, ingredients, image, likes, tags },
+      { title, ingredients, image, likes = 0, tags },
       { auth },
     ) => {
       if (!auth) {

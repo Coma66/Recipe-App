@@ -39,7 +39,7 @@ export const CREATE_RECIPE = gql`
     $title: String!
     $ingredients: String
     $image: String
-    $likes: Int = 0
+    $likes: Int
     $tags: [String!]
   ) {
     createRecipe(
