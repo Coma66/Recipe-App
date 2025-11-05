@@ -7,6 +7,7 @@ title: String!
 author: User
 ingredients: String
 image: String
+likes: Int
 tags: [String!]
 createdAt: Float
 updatedAt: Float

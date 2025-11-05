@@ -15,6 +15,7 @@ export function CreateRecipe() {
   const [title, setTitle] = useState('')
   const [ingredients, setIngredients] = useState('')
   const [image, setImage] = useState('')
+  //const [likes, setLikes] = useState('')
   const [token] = useAuth()
 
   const [createRecipe, { loading, data }] = useGraphQLMutation(CREATE_RECIPE, {

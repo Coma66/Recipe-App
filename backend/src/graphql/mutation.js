@@ -1,11 +1,13 @@
 import { GraphQLError } from 'graphql'
 import { createUser, loginUser } from '../services/users.js'
 import { createRecipe } from '../services/recipes.js'
+import { updateRecipe } from '../services/recipes.js'
 export const mutationSchema = `#graphql
 type Mutation {
 signupUser(username: String!, password: String!): User
 loginUser(username: String!, password: String!): String
-createRecipe(title: String!, ingredients: String, image: String, tags:[String]): Recipe
+createRecipe(title: String!, ingredients: String, image: String, likes: Int, tags:[String]): Recipe
+updateRecipe(title: String!, ingredients: String, image: String, likes: Int, tags:[String]): Recipe
 }
 `
 export const mutationResolver = {
@@ -18,7 +20,7 @@ export const mutationResolver = {
     },
     createRecipe: async (
       parent,
-      { title, ingredients, image, tags },
+      { title, ingredients, image, likes, tags },
       { auth },
     ) => {
       if (!auth) {
@@ -31,7 +33,36 @@ export const mutationResolver = {
           },
         )
       }
-      return await createRecipe(auth.sub, { title, ingredients, image, tags })
+      return await createRecipe(auth.sub, {
+        title,
+        ingredients,
+        image,
+        likes,
+        tags,
+      })
+    },
+    updateRecipe: async (
+      parent,
+      { title, ingredients, image, likes, tags },
+      { auth },
+    ) => {
+      if (!auth) {
+        throw new GraphQLError(
+          'You need to be authenticated to perform this action.',
+          {
+            extensions: {
+              code: 'UNAUTHORIZED',
+            },
+          },
+        )
+      }
+      return await updateRecipe(auth.sub, {
+        title,
+        ingredients,
+        image,
+        likes,
+        tags,
+      })
     },
   },
 }

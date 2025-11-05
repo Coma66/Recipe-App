@@ -6,6 +6,7 @@ export const RECIPE_FIELDS = gql`
     title
     ingredients
     image
+    likes
     tags
     updatedAt
     createdAt
@@ -38,12 +39,14 @@ export const CREATE_RECIPE = gql`
     $title: String!
     $ingredients: String
     $image: String
+    $likes: Int = 0
     $tags: [String!]
   ) {
     createRecipe(
       title: $title
       ingredients: $ingredients
       image: $image
+      likes: $likes
       tags: $tags
     ) {
       id

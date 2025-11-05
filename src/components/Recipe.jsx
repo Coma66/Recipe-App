@@ -8,6 +8,7 @@ export function Recipe({
   author,
   ingredients,
   image,
+  likes,
   id,
   fullRecipe = true,
 }) {
@@ -20,6 +21,7 @@ export function Recipe({
           <h3>{title}</h3>
         </Link>
       )}
+      {<div>Likes: {likes}</div>}
       {fullRecipe && <div>{ingredients}</div>}
       {fullRecipe && (
         <img src={image} style={{ width: '15%', height: '10%' }} alt='' />
@@ -38,6 +40,7 @@ Recipe.propTypes = {
   ingredients: PropTypes.string,
   author: PropTypes.shape(User.propTypes),
   image: PropTypes.string,
+  likes: PropTypes.number,
   id: PropTypes.string.isRequired,
   fullRecipe: PropTypes.bool,
 }
