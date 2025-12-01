@@ -4,9 +4,15 @@ import { useQuery } from '@tanstack/react-query'
 import { getUserInfo } from '../api/users.js'
 import { jwtDecode } from 'jwt-decode'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { useSocket } from '../contexts/SocketIOContext.jsx'
 
 export function Header() {
   const [token, setToken] = useAuth()
+  const { socket } = useSocket()
+  const handleLogout = () => {
+    socket.disconnect()
+    setToken(null)
+  }
   const { sub } = token ? jwtDecode(token) : {}
   const userInfoQuery = useQuery({
     queryKey: ['users', sub],
@@ -20,7 +26,7 @@ export function Header() {
       <div>
         Logged in as <User {...userInfo} />
         <br />
-        <button onClick={() => setToken(null)}>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     )
   }

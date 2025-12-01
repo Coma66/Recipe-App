@@ -4,18 +4,41 @@ import PropTypes from 'prop-types'
 import { ApolloProvider } from '@apollo/client/react/index.js'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core/index.js'
 import { HelmetProvider } from 'react-helmet-async'
+//import { io } from 'socket.io-client'
+import { SocketIOContextProvider } from './contexts/SocketIOContext.jsx'
 
 const apolloClient = new ApolloClient({
   uri: import.meta.env.VITE_GRAPHQL_URL,
   cache: new InMemoryCache(),
 })
+
+//const socket = io(import.meta.env.VITE_SOCKET_HOST)
 const queryClient = new QueryClient()
+
+/*socket.on('connect', async () => {
+  console.log('connected to socket.io as', socket.id)
+  socket.emit(
+    'chat.message',
+    new URLSearchParams(window.location.search).get('mymsg'),
+  )
+  const userInfo = await socket.emitWithAck('user.info', socket.id)
+  console.log('user info', userInfo)
+})
+socket.on('connect_error', (err) => {
+  console.error('socket.io connect error:', err)
+})
+socket.on('chat.message', (msg) => {
+  console.log(`${msg.username}: ${msg.message}`)
+})*/
+
 export function App({ children }) {
   return (
     <HelmetProvider>
       <ApolloProvider client={apolloClient}>
         <QueryClientProvider client={queryClient}>
-          <AuthContextProvider>{children}</AuthContextProvider>
+          <AuthContextProvider>
+            <SocketIOContextProvider>{children}</SocketIOContextProvider>
+          </AuthContextProvider>
         </QueryClientProvider>
       </ApolloProvider>
     </HelmetProvider>
