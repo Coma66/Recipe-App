@@ -24,13 +24,6 @@ export function handleSocket(io) {
     socket.on('disconnect', () => {
       console.log('user disconnected:', socket.id)
     })
-    socket.on('chat.message', (message) => {
-      console.log(`${socket.id}: ${message}`)
-      socket.broadcast.emit('chat.message', {
-        username: socket.user.username,
-        message,
-      })
-    })
     socket.on('newRecipe', (recipeData) => {
       socket.broadcast.emit('popup', recipeData)
     })
