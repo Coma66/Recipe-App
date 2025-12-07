@@ -32,11 +32,7 @@ export function handleSocket(io) {
       })
     })
     socket.on('newRecipe', (recipeData) => {
-      /*console.log(recipeData.data.createRecipe.title)
-      console.log(`/recipes/${recipeData.data.createRecipe.id}/${slug(
-              recipeData.data.createRecipe.title,
-            )}`)*/
-      socket.emit('popup', recipeData)
+      socket.broadcast.emit('popup', recipeData)
     })
     socket.on('user.info', async (socketId, callback) => {
       const sockets = await io.in(socketId).fetchSockets()
