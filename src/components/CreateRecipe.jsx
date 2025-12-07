@@ -10,11 +10,17 @@ import {
 } from '../api/graphql/recipes.js'
 import { Link } from 'react-router-dom'
 import slug from 'slug'
+import { useSocket } from '../contexts/SocketIOContext.jsx'
+import { Popup } from './Popup.jsx'
 
 export function CreateRecipe() {
+  const { socket } = useSocket()
   const [title, setTitle] = useState('')
   const [ingredients, setIngredients] = useState('')
   const [image, setImage] = useState('')
+  const [popupState, setPopupState] = useState(false)
+  const [popupTitle, setPopupTitle] = useState('')
+  const [popupLink, setPopupLink] = useState('')
   //const [likes, setLikes] = useState('')
   const [token] = useAuth()
 
@@ -30,11 +36,36 @@ export function CreateRecipe() {
     mutationFn: () => createRecipe(token, { title, ingredients, image }),
     onSuccess: () => queryClient.invalidateQueries(['recipes']),
   })*/
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    createRecipe()
+    const recipeData = await createRecipe()
+    if (recipeData) {
+      /*const title = recipeData.data.createRecipe.title
+      const link = `/recipes/${recipeData.data.createRecipe.id}/${slug(
+              recipeData.data.createRecipe.title,
+            )}`*/
+      socket.emit('newRecipe', recipeData)
+    }
     //createRecipeMutation.mutate()
   }
+  if (socket) {
+    socket.on('popup', (recipeData) => {
+      console.log(recipeData.data.createRecipe.title)
+      console.log(
+        `/recipes/${recipeData.data.createRecipe.id}/${slug(
+          recipeData.data.createRecipe.title,
+        )}`,
+      )
+      setPopupTitle(recipeData.data.createRecipe.title)
+      setPopupLink(
+        `/recipes/${recipeData.data.createRecipe.id}/${slug(
+          recipeData.data.createRecipe.title,
+        )}`,
+      )
+      setPopupState(true)
+    })
+  }
+
   if (!token) return <div>Please log in to create new recipes.</div>
   return (
     <form onSubmit={handleSubmit}>
@@ -85,6 +116,9 @@ export function CreateRecipe() {
           created successfully!
         </>
       ) : null}
+      <br />
+      <br />
+      {popupState && <Popup title={popupTitle} link={popupLink} />}
     </form>
   )
 }

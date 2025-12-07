@@ -31,6 +31,13 @@ export function handleSocket(io) {
         message,
       })
     })
+    socket.on('newRecipe', (recipeData) => {
+      /*console.log(recipeData.data.createRecipe.title)
+      console.log(`/recipes/${recipeData.data.createRecipe.id}/${slug(
+              recipeData.data.createRecipe.title,
+            )}`)*/
+      socket.emit('popup', recipeData)
+    })
     socket.on('user.info', async (socketId, callback) => {
       const sockets = await io.in(socketId).fetchSockets()
       if (sockets.length === 0) return callback(null)
