@@ -1,7 +1,6 @@
 //import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext.jsx'
-//import { createRecipe } from '../api/recipes.js'
 import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
 import {
   CREATE_RECIPE,
@@ -21,7 +20,6 @@ export function CreateRecipe() {
   const [popupState, setPopupState] = useState(false)
   const [popupTitle, setPopupTitle] = useState('')
   const [popupLink, setPopupLink] = useState('')
-  //const [likes, setLikes] = useState('')
   const [token] = useAuth()
 
   const [createRecipe, { loading, data }] = useGraphQLMutation(CREATE_RECIPE, {
@@ -30,32 +28,15 @@ export function CreateRecipe() {
     refetchQueries: [GET_RECIPES, GET_RECIPES_BY_AUTHOR],
   })
 
-  /*const queryClient = useQueryClient()
-
-  const createRecipeMutation = useMutation({
-    mutationFn: () => createRecipe(token, { title, ingredients, image }),
-    onSuccess: () => queryClient.invalidateQueries(['recipes']),
-  })*/
   const handleSubmit = async (e) => {
     e.preventDefault()
     const recipeData = await createRecipe()
     if (recipeData) {
-      /*const title = recipeData.data.createRecipe.title
-      const link = `/recipes/${recipeData.data.createRecipe.id}/${slug(
-              recipeData.data.createRecipe.title,
-            )}`*/
       socket.emit('newRecipe', recipeData)
     }
-    //createRecipeMutation.mutate()
   }
   if (socket) {
     socket.on('popup', (recipeData) => {
-      console.log(recipeData.data.createRecipe.title)
-      console.log(
-        `/recipes/${recipeData.data.createRecipe.id}/${slug(
-          recipeData.data.createRecipe.title,
-        )}`,
-      )
       setPopupTitle(recipeData.data.createRecipe.title)
       setPopupLink(
         `/recipes/${recipeData.data.createRecipe.id}/${slug(
